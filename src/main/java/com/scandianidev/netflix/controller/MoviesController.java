@@ -6,18 +6,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scandianidev.netflix.dtos.MovieResponseDTO;
+import com.scandianidev.netflix.dtos.PosterDTO;
 import com.scandianidev.netflix.model.Movies;
 import com.scandianidev.netflix.service.MoviesService;
 
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("movies")
 public class MoviesController {
@@ -49,7 +51,7 @@ public class MoviesController {
     }
 
     @GetMapping("/search/{title}")
-    public List<Movies> searchMovies(@PathVariable String title) {
+    public List<PosterDTO> searchMovies(@PathVariable String title) {
         return moviesService.getMovieByTitle(title);
     }
 

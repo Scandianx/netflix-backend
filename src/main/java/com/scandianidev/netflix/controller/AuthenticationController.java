@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ import com.scandianidev.netflix.repository.UsuarioRepository;
 import com.scandianidev.netflix.security.TokenService;
 
 import org.springframework.http.ResponseEntity;
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
@@ -40,14 +41,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public Usuario register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByLogin(data.login()) != null) return new Usuario();
+    public ResponseEntity<LoginResponseDTO> register(@RequestBody @Valid RegisterDTO data){
+        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().body(null);
 
         String eP = new BCryptPasswordEncoder().encode(data.password());
         Usuario newUser = new Usuario(data.nome(), data.login(), eP , data.role());
 
         repository.save(newUser);
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return newUser;
+        var token = tokenService.generateToken((Usuario) auth.getPrincipal());
+        System.out.println("registrando");
+        return ResponseEntity.ok(new LoginResponseDTO(token));
+
+        
     }
 }

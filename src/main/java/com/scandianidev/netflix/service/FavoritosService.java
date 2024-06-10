@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.scandianidev.netflix.dtos.AggregationResult;
+
 import com.scandianidev.netflix.dtos.FavRequestDTO;
 import com.scandianidev.netflix.dtos.MovieResponseDTO;
 import com.scandianidev.netflix.model.Favoritos;
