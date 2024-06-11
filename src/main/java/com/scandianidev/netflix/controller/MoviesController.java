@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scandianidev.netflix.dtos.MovieResponseDTO;
+import com.scandianidev.netflix.dtos.MovieSectionDTO;
 import com.scandianidev.netflix.dtos.PosterDTO;
 import com.scandianidev.netflix.model.Movies;
 import com.scandianidev.netflix.service.MoviesService;
@@ -38,10 +40,7 @@ public class MoviesController {
     public List<Movies> getFirst10Movies() {
         return moviesService.getFirst10Movies();
     }
-    @GetMapping("/top10")
-    public List<Movies> getTop10Movies() {
-        return moviesService.getTop10Movies();
-    }
+    
     @GetMapping("/indicacao")
     public List<Movies> getIndicacoes() {
         List<Integer> genreIds = new ArrayList<>();
@@ -53,6 +52,10 @@ public class MoviesController {
     @GetMapping("/search/{title}")
     public List<PosterDTO> searchMovies(@PathVariable String title) {
         return moviesService.getMovieByTitle(title);
+    }
+    @GetMapping("homepage")
+    public List<MovieSectionDTO> getHomePage(@RequestHeader("Authorization") String token) {
+        return moviesService.getHomePage(token);
     }
 
     

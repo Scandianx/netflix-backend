@@ -18,7 +18,7 @@ public interface MoviesRepository extends MongoRepository<Movies, String>{
     Page<Movies> findAll(Pageable pageable);
 
     @Query(value = "{}", sort = "{ 'popularity' : -1 }")
-    List<Movies> findTop10ByOrderByPopularityDesc();
+    Page<Movies> findTop10ByOrderByPopularityDesc(Pageable pageable);
 
     @Query(value = "{ 'genreIds': { $in: ?0 } }")
     List<Movies> findByGenreIdsIn(List<Integer> genreIds);
@@ -26,6 +26,8 @@ public interface MoviesRepository extends MongoRepository<Movies, String>{
     List<Movies> findTop10ByGenreIdsInOrderByPopularityDescVoteAverageDesc(List<Integer> genreIds);
 
     List<Movies> findByTitleContainingIgnoreCase(String title);
+    @Query(value = "{}", sort = "{ 'release_date' : -1 }")
+    Page<Movies> findTop10ByReleaseDateDesc(Pageable pageable);
 
     
     
