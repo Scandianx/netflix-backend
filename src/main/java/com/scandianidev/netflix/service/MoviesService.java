@@ -59,7 +59,7 @@ public class MoviesService {
     }
 
     public List<Movies> getIndicacoes(List<Integer> genreIds) {
-        return moviesRepository.findTop10ByGenreIdsInOrderByPopularityDescVoteAverageDesc(genreIds);
+        return moviesRepository.findTop30ByGenreIdsInOrderByPopularityDescVoteAverageDesc(genreIds);
     }
 
     public List<PosterDTO> getMovieByTitle(String title) {
@@ -77,24 +77,38 @@ public class MoviesService {
         var login = tokenService.validateToken(token);
         Usuario user = usuarioRepository.findByLogin(login);
         List<MovieSectionDTO> sections = new ArrayList<>();
-        List<Movies> indicacoes = moviesRepository.findTop10ByGenreIdsInOrderByPopularityDescVoteAverageDesc(favsUser(user.getId()));
+        
         List<MovieDTO> favs = getUserFavs(user.getId());
+    
         Pageable pageable = PageRequest.of(0, 10);
         Page<Movies> page = moviesRepository.findTop10ByOrderByPopularityDesc(pageable);
         List<Movies> top10 = page.getContent();
-        Pageable pageable2 = PageRequest.of(0, 10);
+    
+        Pageable pageable2 = PageRequest.of(1, 10);
         Page<Movies> page2 = moviesRepository.findTop10ByOrderByPopularityDesc(pageable2);
         List<Movies> recent = page2.getContent();
+    
         List<PosterDTO> top10f = getTop10Movies();
+        List<String> usedMovieIds = favs.stream().map(MovieDTO::getId).collect(Collectors.toList());
+        usedMovieIds.addAll(top10.stream().map(Movies::getId).collect(Collectors.toList()));
+        usedMovieIds.addAll(recent.stream().map(Movies::getId).collect(Collectors.toList()));
+    
+        List<Movies> indicacoes = moviesRepository.findTop30ByGenreIdsInOrderByPopularityDescVoteAverageDesc(favsUser(user.getId()))
+                .stream()
+                .filter(movie -> !usedMovieIds.contains(movie.getId()))
+                .collect(Collectors.toList());
+    
         sections.add(new MovieSectionDTO("Seus favoritos", favs));
-        sections.add(new MovieSectionDTO("Indicacoes à sua preferência", convertToMovieDTO(indicacoes)));
+        sections.add(new MovieSectionDTO("Indicações à sua preferência", convertToMovieDTO(indicacoes)));
         sections.add(new MovieSectionDTO("Populares", convertToMovieDTO(top10)));
         sections.add(new MovieSectionDTO("Lançamentos recentes", convertToMovieDTO(recent)));
+    
         List<MovieDTO> top10favs = new ArrayList<>();
         for (PosterDTO p : top10f) {
             top10favs.add(new MovieDTO(p.getId(), p.getPoster()));
         }
         sections.add(new MovieSectionDTO("Favoritos da plataforma", top10favs));
+    
         return sections;
     }
 

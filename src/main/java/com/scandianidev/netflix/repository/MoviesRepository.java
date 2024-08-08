@@ -23,7 +23,7 @@ public interface MoviesRepository extends MongoRepository<Movies, String>{
     @Query(value = "{ 'genreIds': { $in: ?0 } }")
     List<Movies> findByGenreIdsIn(List<Integer> genreIds);
 
-    List<Movies> findTop10ByGenreIdsInOrderByPopularityDescVoteAverageDesc(List<Integer> genreIds);
+    List<Movies> findTop30ByGenreIdsInOrderByPopularityDescVoteAverageDesc(List<Integer> genreIds);
 
     List<Movies> findByTitleContainingIgnoreCase(String title);
     @Query(value = "{}", sort = "{ 'release_date' : -1 }")

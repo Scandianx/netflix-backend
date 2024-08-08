@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scandianidev.netflix.dtos.FavRequestDTO;
-import com.scandianidev.netflix.dtos.MovieResponseDTO;
+
 import com.scandianidev.netflix.dtos.PosterDTO;
 import com.scandianidev.netflix.service.FavoritosService;
 import org.springframework.web.bind.annotation.PostMapping;
